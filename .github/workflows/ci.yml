@@ -13,25 +13,27 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20] # Updated to match your Node.js version
+        node-version: [20]
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
-    - name: Update npm to the latest version
-      run: npm install -g npm@latest
-
-    - name: Verify npm version
-      run: npm --version
-
-    - name: Install dependencies
-      run: npm install
+    - name: Install dependencies (including Jest)
+      run: |
+        npm ci
+        npm install -g jest
+        
+    - name: Verify Jest installation
+      run: |
+        which jest
+        jest --version
 
     - name: Run tests
       run: npm test
